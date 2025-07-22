@@ -25,6 +25,7 @@ import {
   AlertCircle,
 } from "lucide-react"
 import { motion } from "framer-motion"
+import BudgetRequestModal from "@/components/BudgetRequestModal"
 
 interface Service {
   id: string
@@ -288,6 +289,7 @@ export default function CreatePlanPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: number }>({})
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null)
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false)
 
   const selectBundle = (bundleId: string) => {
     const bundle = bundles.find((b) => b.id === bundleId)
@@ -415,6 +417,27 @@ export default function CreatePlanPage() {
   }
 
   const progress = (currentStep / (planSteps.length + 1)) * 100
+
+  const handleBudgetSubmit = async (budgetData: any) => {
+    try {
+      const response = await fetch("/api/budget", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(budgetData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Error enviando la solicitud de presupuesto");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error enviando presupuesto:", error);
+      throw error;
+    }
+  };
 
   if (currentStep > planSteps.length) {
     const recommendations = getRecommendations()
@@ -556,7 +579,10 @@ export default function CreatePlanPage() {
                     {selectedBundle ? "Precio del kit seleccionado" : "Precio final de tu proyecto personalizado"}
                   </p>
                   <div className="space-y-4">
-                    <button className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-2xl font-medium transition-colors">
+                    <button 
+                      onClick={() => setIsBudgetModalOpen(true)}
+                      className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-2xl font-medium transition-colors"
+                    >
                       Solicitar Presupuesto
                     </button>
                     <button
@@ -827,6 +853,17 @@ export default function CreatePlanPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de solicitud de presupuesto */}
+      <BudgetRequestModal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        onSubmit={handleBudgetSubmit}
+        selectedServices={selectedServices}
+        selectedBundle={selectedBundle}
+        totalPrice={calculateTotal()}
+        servicesDetails={getSelectedServicesDetails()}
+      />
     </motion.div>
   )
 }

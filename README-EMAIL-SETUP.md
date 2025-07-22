@@ -1,6 +1,17 @@
-# 📧 Configuración de Email para el Formulario de Contacto
+# 📧 Configuración de Email para Formularios
 
-Este documento explica cómo configurar el sistema de email para que el formulario de contacto funcione correctamente.
+Este documento explica cómo configurar el sistema de email para que los formularios de contacto y presupuestos funcionen correctamente.
+
+## 📋 Formularios Disponibles
+
+### 1. **Formulario de Contacto** (`/contact`)
+- Formulario de 7 pasos para solicitudes generales
+- Envía emails a través de `/api/contact`
+
+### 2. **Formulario de Presupuesto** (`/create-plan`)
+- Configurador de proyectos con servicios personalizables
+- Envía solicitudes de presupuesto a través de `/api/budget`
+- Incluye detalles completos del proyecto y servicios seleccionados
 
 ## 🚀 Opciones Disponibles
 
@@ -55,19 +66,26 @@ npm install @resend/node
 
 ## 🧪 Probar el Sistema
 
-1. **Inicia el servidor de desarrollo**:
-   ```bash
-   npm run dev
-   ```
+### Formulario de Contacto
+1. **Ve al formulario** en `http://localhost:3000/contact`
+2. **Completa los 7 pasos** y envía la solicitud
+3. **Verifica los resultados** en consola o email
 
-2. **Ve al formulario de contacto** en `http://localhost:3000/contact`
+### Formulario de Presupuesto
+1. **Ve al configurador** en `http://localhost:3000/create-plan`
+2. **Selecciona servicios** o elige un kit prediseñado
+3. **Completa el resumen** y haz clic en "Solicitar Presupuesto"
+4. **Rellena el modal** con tus datos y envía
+5. **Verifica los resultados** en consola o email
 
-3. **Completa el formulario** y envía la solicitud
+### Scripts de Testing
+```bash
+# Probar servicio de contacto
+node test-email.js
 
-4. **Verifica los resultados**:
-   - **Gmail**: Revisa tu bandeja de entrada
-   - **Resend**: Revisa el dashboard de Resend
-   - **Modo desarrollo**: Revisa la consola del servidor
+# Probar servicio de presupuestos
+node test-budget.js
+```
 
 ## 🔍 Solución de Problemas
 
@@ -116,12 +134,21 @@ RESEND_TO=tu-email@ejemplo.com
 
 ## 🎯 Características del Sistema
 
+### Sistema de Contacto
 - ✅ **Múltiples proveedores**: Gmail, Resend, modo desarrollo
 - ✅ **Validación robusta**: Email, campos obligatorios
 - ✅ **Manejo de errores**: Mensajes específicos y útiles
 - ✅ **Email HTML**: Diseño profesional y responsive
 - ✅ **Logging**: Información detallada en consola
 - ✅ **Fallback**: Modo desarrollo automático si no hay configuración
+
+### Sistema de Presupuestos
+- ✅ **Configurador visual**: Selección de servicios paso a paso
+- ✅ **Kits prediseñados**: Packs optimizados con descuentos
+- ✅ **Modal profesional**: Formulario de solicitud elegante
+- ✅ **Email detallado**: Incluye configuración completa del proyecto
+- ✅ **Validación completa**: Datos del cliente y proyecto
+- ✅ **UX mejorada**: Estados de carga y feedback visual
 
 ## 🔒 Seguridad
 
