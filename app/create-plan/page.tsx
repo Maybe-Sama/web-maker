@@ -299,6 +299,8 @@ export default function CreatePlanPage() {
   })
   const [showContactWarning, setShowContactWarning] = useState(false)
 
+
+
   const selectBundle = (bundleId: string) => {
     const bundle = bundles.find((b) => b.id === bundleId)
     if (bundle) {
@@ -699,6 +701,27 @@ export default function CreatePlanPage() {
               </div>
             </div>
           </div>
+
+          {/* Modal de solicitud de presupuesto */}
+          <BudgetRequestModal
+            isOpen={isBudgetModalOpen}
+            onClose={() => setIsBudgetModalOpen(false)}
+            onSubmit={handleBudgetSubmit}
+            selectedServices={selectedServices}
+            selectedBundle={selectedBundle}
+            totalPrice={calculateTotal()}
+            servicesDetails={getSelectedServicesDetails()}
+            contactData={contactData}
+          />
+
+          {/* Modal de advertencia de datos de contacto */}
+          <ContactWarningModal
+            isOpen={showContactWarning}
+            onClose={() => setShowContactWarning(false)}
+            onAddContactData={handleAddContactData}
+          />
+
+
         </div>
       </motion.div>
     )
@@ -924,25 +947,6 @@ export default function CreatePlanPage() {
           </div>
         </div>
       </div>
-
-      {/* Modal de solicitud de presupuesto */}
-      <BudgetRequestModal
-        isOpen={isBudgetModalOpen}
-        onClose={() => setIsBudgetModalOpen(false)}
-        onSubmit={handleBudgetSubmit}
-        selectedServices={selectedServices}
-        selectedBundle={selectedBundle}
-        totalPrice={calculateTotal()}
-        servicesDetails={getSelectedServicesDetails()}
-        contactData={contactData}
-      />
-
-      {/* Modal de advertencia de datos de contacto */}
-      <ContactWarningModal
-        isOpen={showContactWarning}
-        onClose={() => setShowContactWarning(false)}
-        onAddContactData={handleAddContactData}
-      />
     </motion.div>
   )
 }
