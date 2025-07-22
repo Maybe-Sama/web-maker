@@ -18,6 +18,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validación de consentimientos
+    if (!data.consents || !data.consents.dataProcessing) {
+      return NextResponse.json(
+        { error: "Es obligatorio aceptar el procesamiento de datos personales." },
+        { status: 400 }
+      );
+    }
+
     // Validación de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {

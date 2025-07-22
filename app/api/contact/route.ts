@@ -10,13 +10,21 @@ export async function POST(req: NextRequest) {
     const configValidation = validateEmailConfig();
     console.log("📧 Configuración de email:", configValidation.message);
 
-    // Validación básica de datos
-    if (!data.email || !data.name || !data.phone) {
-      return NextResponse.json(
-        { error: "Faltan campos obligatorios: email, nombre o teléfono." }, 
-        { status: 400 }
-      );
-    }
+                 // Validación básica de datos
+             if (!data.email || !data.name || !data.phone) {
+               return NextResponse.json(
+                 { error: "Faltan campos obligatorios: email, nombre o teléfono." },
+                 { status: 400 }
+               );
+             }
+
+             // Validación de consentimientos
+             if (!data.consents || !data.consents.dataProcessing) {
+               return NextResponse.json(
+                 { error: "Es obligatorio aceptar el procesamiento de datos personales." },
+                 { status: 400 }
+               );
+             }
 
     // Validación de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

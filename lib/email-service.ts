@@ -12,6 +12,13 @@ export interface ContactFormData {
   hasWebsite: string;
   websiteDetails?: string;
   ideaDescription?: string;
+  consents?: {
+    marketing: boolean;
+    communications: boolean;
+    dataProcessing: boolean;
+    thirdParties: boolean;
+    dataRetention: boolean;
+  };
 }
 
 export class EmailService {

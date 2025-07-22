@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, User, Mail, Phone, Building, FileText, Calendar, MessageSquare, CheckCircle, AlertCircle } from "lucide-react"
+import { X, User, Mail, Phone, Building, FileText, Calendar, MessageSquare, CheckCircle, AlertCircle, Shield } from "lucide-react"
+import ConsentCheckboxes, { ConsentData } from "./ConsentCheckboxes"
 
 interface BudgetRequestModalProps {
   isOpen: boolean
@@ -28,6 +29,7 @@ interface FormData {
   projectDescription: string
   timeline: string
   additionalRequirements: string
+  consents: ConsentData
 }
 
 export default function BudgetRequestModal({
@@ -47,7 +49,14 @@ export default function BudgetRequestModal({
     company: contactData?.company || "",
     projectDescription: "",
     timeline: "",
-    additionalRequirements: ""
+    additionalRequirements: "",
+    consents: {
+      marketing: false,
+      communications: false,
+      dataProcessing: false,
+      thirdParties: false,
+      dataRetention: false
+    }
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -68,6 +77,10 @@ export default function BudgetRequestModal({
     }
   }
 
+  const handleConsentChange = (newConsents: ConsentData) => {
+    setFormData(prev => ({ ...prev, consents: newConsents }))
+  }
+
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {}
 
@@ -85,6 +98,11 @@ export default function BudgetRequestModal({
       newErrors.phone = "El teléfono es obligatorio"
     } else if (!validators.phone(formData.phone)) {
       newErrors.phone = "Por favor, introduce un teléfono válido"
+    }
+
+    // Validar consentimientos requeridos
+    if (!formData.consents.dataProcessing) {
+      newErrors.consents = "Debes aceptar el procesamiento de datos personales"
     }
 
     setErrors(newErrors)
@@ -127,7 +145,14 @@ export default function BudgetRequestModal({
         company: "",
         projectDescription: "",
         timeline: "",
-        additionalRequirements: ""
+        additionalRequirements: "",
+        consents: {
+          marketing: false,
+          communications: false,
+          dataProcessing: false,
+          thirdParties: false,
+          dataRetention: false
+        }
       })
       setErrors({})
       setIsSubmitted(false)
@@ -347,6 +372,24 @@ export default function BudgetRequestModal({
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Consentimientos */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                  <Shield className="w-5 h-5 mr-2 text-blue-400" />
+                  Consentimientos de Protección de Datos
+                </h3>
+                <ConsentCheckboxes
+                  onConsentChange={handleConsentChange}
+                  requiredConsents={['dataProcessing']}
+                />
+                {errors.consents && (
+                  <p className="text-red-400 text-sm mt-2 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.consents}
+                  </p>
+                )}
               </div>
 
               {/* Resumen del presupuesto */}

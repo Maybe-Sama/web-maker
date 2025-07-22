@@ -17,6 +17,15 @@ export interface BudgetFormData {
   projectDescription?: string;
   timeline?: string;
   additionalRequirements?: string;
+  
+  // Consentimientos GDPR/LOPD
+  consents?: {
+    marketing: boolean;
+    communications: boolean;
+    dataProcessing: boolean;
+    thirdParties: boolean;
+    dataRetention: boolean;
+  };
 }
 
 export interface ServiceDetail {
