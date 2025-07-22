@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
   ArrowRight,
   ArrowLeft,
@@ -288,7 +288,6 @@ const planSteps: PlanStep[] = [
 ]
 
 export default function CreatePlanPage() {
-  // Estado persistente usando localStorage
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: number }>({})
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null)
@@ -300,41 +299,7 @@ export default function CreatePlanPage() {
     company: ""
   })
   const [showContactWarning, setShowContactWarning] = useState(false)
-  const [isContactDataModalOpen, setIsContactDataModalOpen] = useState(false)
-
-  // Cargar estado guardado al montar el componente
-  useEffect(() => {
-    const savedState = localStorage.getItem('createPlanState')
-    if (savedState) {
-      try {
-        const parsedState = JSON.parse(savedState)
-        setCurrentStep(parsedState.currentStep || 1)
-        setSelectedServices(parsedState.selectedServices || {})
-        setSelectedBundle(parsedState.selectedBundle || null)
-        setContactData(parsedState.contactData || {
-          name: "",
-          email: "",
-          phone: "",
-          company: ""
-        })
-      } catch (error) {
-        console.error('Error loading saved state:', error)
-      }
-    }
-  }, [])
-
-  // Guardar estado cuando cambie
-  useEffect(() => {
-    const stateToSave = {
-      currentStep,
-      selectedServices,
-      selectedBundle,
-      contactData
-    }
-    localStorage.setItem('createPlanState', JSON.stringify(stateToSave))
-  }, [currentStep, selectedServices, selectedBundle, contactData])
-
-
+  const [showContactDataModal, setShowContactDataModal] = useState(false)
 
   const selectBundle = (bundleId: string) => {
     const bundle = bundles.find((b) => b.id === bundleId)
@@ -487,10 +452,6 @@ export default function CreatePlanPage() {
         throw new Error(result.error || "Error enviando la solicitud de presupuesto");
       }
 
-      // Limpiar estado después de enviar exitosamente
-      clearPlanState()
-      setIsBudgetModalOpen(false)
-
       return result;
     } catch (error) {
       console.error("Error enviando presupuesto:", error);
@@ -506,7 +467,7 @@ export default function CreatePlanPage() {
 
   const handleRequestBudget = () => {
     if (!isContactDataComplete()) {
-      setShowContactWarning(true)
+      setShowContactDataModal(true)
       return
     }
     setIsBudgetModalOpen(true)
@@ -514,35 +475,13 @@ export default function CreatePlanPage() {
 
   const handleAddContactData = () => {
     setShowContactWarning(false)
-    // Abrir modal de datos de contacto
-    setIsContactDataModalOpen(true)
+    setShowContactDataModal(true)
   }
 
-  const handleAddDataButton = () => {
-    if (!isContactDataComplete()) {
-      setShowContactWarning(true)
-      return
-    }
-    // Si los datos están completos, abrir modal para modificarlos
-    setIsContactDataModalOpen(true)
-  }
-
-  const handleSaveContactData = (data: { name: string; email: string; phone: string; company: string }) => {
+  const handleSaveContactData = (data: any) => {
     setContactData(data)
-    setIsContactDataModalOpen(false)
-  }
-
-  const clearPlanState = () => {
-    setCurrentStep(1)
-    setSelectedServices({})
-    setSelectedBundle(null)
-    setContactData({
-      name: "",
-      email: "",
-      phone: "",
-      company: ""
-    })
-    localStorage.removeItem('createPlanState')
+    // Después de guardar los datos, abrir el modal de presupuesto
+    setIsBudgetModalOpen(true)
   }
 
   if (currentStep > planSteps.length) {
@@ -717,17 +656,10 @@ export default function CreatePlanPage() {
                       {isContactDataComplete() ? 'Solicitar Presupuesto' : 'Solicitar Presupuesto (Faltan Datos)'}
                     </button>
                     <button
-                      onClick={handleAddDataButton}
+                      onClick={() => setShowContactDataModal(true)}
                       className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
                     >
-                      {isContactDataComplete() ? 'Modificar Configuración' : 'Añadir Datos de Contacto'}
-                    </button>
-                    
-                    <button
-                      onClick={clearPlanState}
-                      className="w-full bg-red-600 hover:bg-red-500 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
-                    >
-                      Empezar Plan Nuevo
+                      Añadir Datos
                     </button>
                   </div>
 
@@ -763,35 +695,6 @@ export default function CreatePlanPage() {
               </div>
             </div>
           </div>
-
-          {/* Modal de solicitud de presupuesto */}
-          <BudgetRequestModal
-            isOpen={isBudgetModalOpen}
-            onClose={() => setIsBudgetModalOpen(false)}
-            onSubmit={handleBudgetSubmit}
-            selectedServices={selectedServices}
-            selectedBundle={selectedBundle}
-            totalPrice={calculateTotal()}
-            servicesDetails={getSelectedServicesDetails()}
-            contactData={contactData}
-          />
-
-          {/* Modal de advertencia de datos de contacto */}
-          <ContactWarningModal
-            isOpen={showContactWarning}
-            onClose={() => setShowContactWarning(false)}
-            onAddContactData={handleAddContactData}
-          />
-
-          {/* Modal de datos de contacto */}
-          <ContactDataModal
-            isOpen={isContactDataModalOpen}
-            onClose={() => setIsContactDataModalOpen(false)}
-            onSave={handleSaveContactData}
-            initialData={contactData}
-          />
-
-
         </div>
       </motion.div>
     )
@@ -1017,6 +920,33 @@ export default function CreatePlanPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de solicitud de presupuesto */}
+      <BudgetRequestModal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        onSubmit={handleBudgetSubmit}
+        selectedServices={selectedServices}
+        selectedBundle={selectedBundle}
+        totalPrice={calculateTotal()}
+        servicesDetails={getSelectedServicesDetails()}
+        contactData={contactData}
+      />
+
+      {/* Modal de advertencia de datos de contacto */}
+      <ContactWarningModal
+        isOpen={showContactWarning}
+        onClose={() => setShowContactWarning(false)}
+        onAddContactData={handleAddContactData}
+      />
+
+      {/* Modal de datos de contacto */}
+      <ContactDataModal
+        isOpen={showContactDataModal}
+        onClose={() => setShowContactDataModal(false)}
+        onSave={handleSaveContactData}
+        initialData={contactData}
+      />
     </motion.div>
   )
 }

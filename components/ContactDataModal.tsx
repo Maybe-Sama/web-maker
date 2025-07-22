@@ -2,18 +2,20 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { User, Mail, Phone, Building, X, Save } from "lucide-react"
+import { X, User, Mail, Phone, Building, AlertCircle, CheckCircle } from "lucide-react"
 
 interface ContactDataModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (data: { name: string; email: string; phone: string; company: string }) => void
-  initialData?: {
-    name: string
-    email: string
-    phone: string
-    company: string
-  }
+  onSave: (data: ContactFormData) => void
+  initialData?: ContactFormData
+}
+
+interface ContactFormData {
+  name: string
+  email: string
+  phone: string
+  company: string
 }
 
 export default function ContactDataModal({
@@ -22,19 +24,25 @@ export default function ContactDataModal({
   onSave,
   initialData
 }: ContactDataModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: initialData?.name || "",
     email: initialData?.email || "",
     phone: initialData?.phone || "",
     company: initialData?.company || ""
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const validators = {
+    email: (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+    phone: (phone: string) => /^[+]?[\d\s\-()]{9,}$/.test(phone.trim())
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
     
-    // Clear error when user starts typing
+    // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }))
     }
@@ -49,25 +57,48 @@ export default function ContactDataModal({
 
     if (!formData.email.trim()) {
       newErrors.email = "El email es obligatorio"
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "El formato del email no es válido"
+    } else if (!validators.email(formData.email)) {
+      newErrors.email = "Por favor, introduce un email válido"
     }
 
     if (!formData.phone.trim()) {
       newErrors.phone = "El teléfono es obligatorio"
-    } else if (!/^[+]?[\d\s\-()]{9,}$/.test(formData.phone.trim())) {
-      newErrors.phone = "El formato del teléfono no es válido"
+    } else if (!validators.phone(formData.phone)) {
+      newErrors.phone = "Por favor, introduce un teléfono válido"
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (validateForm()) {
-      onSave(formData)
+    if (!validateForm()) {
+      return
+    }
+
+    setIsSubmitting(true)
+    
+    try {
+      await onSave(formData)
+      onClose()
+    } catch (error) {
+      console.error("Error guardando datos de contacto:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      setFormData({
+        name: initialData?.name || "",
+        email: initialData?.email || "",
+        phone: initialData?.phone || "",
+        company: initialData?.company || ""
+      })
+      setErrors({})
       onClose()
     }
   }
@@ -85,143 +116,157 @@ export default function ContactDataModal({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-3xl max-w-md w-full"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-3">
-                  <User className="text-blue-600" size={20} />
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <User className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Datos de Contacto</h2>
+                    <p className="text-gray-600 text-sm">Completa tu información personal</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">Datos de Contacto</h2>
-                  <p className="text-sm text-gray-500">Completa tu información personal</p>
-                </div>
+                <button
+                  onClick={handleClose}
+                  disabled={isSubmitting}
+                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors disabled:opacity-50"
+                >
+                  <X className="w-4 h-4 text-gray-600" />
+                </button>
               </div>
-              <button
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-              >
-                <X size={16} className="text-gray-600" />
-              </button>
             </div>
 
-            {/* Content */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* Nombre */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre completo *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User size={16} className="text-gray-400" />
-                  </div>
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre completo *
+                  </label>
                   <input
                     type="text"
-                    id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                      errors.name ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="Tu nombre completo"
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.name}
+                    </p>
+                  )}
                 </div>
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-                )}
-              </div>
 
-              {/* Email */}
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail size={16} className="text-gray-400" />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email *
+                  </label>
                   <input
                     type="email"
-                    id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                      errors.email ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="tu@email.com"
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                )}
-              </div>
 
-              {/* Teléfono */}
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Teléfono *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone size={16} className="text-gray-400" />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Teléfono *
+                  </label>
                   <input
                     type="tel"
-                    id="phone"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                    className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                      errors.phone ? 'border-red-300' : 'border-gray-300'
                     }`}
-                    placeholder="+34 600 000 000"
+                    placeholder="612 345 678"
                   />
+                  {errors.phone && (
+                    <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.phone}
+                    </p>
+                  )}
                 </div>
-                {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                )}
-              </div>
 
-              {/* Empresa */}
-              <div>
-                <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                  Empresa (opcional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Building size={16} className="text-gray-400" />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Empresa (opcional)
+                  </label>
                   <input
                     type="text"
-                    id="company"
                     name="company"
                     value={formData.company}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Nombre de tu empresa"
                   />
+                </div>
+              </div>
+
+              {/* Info box */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-2xl">
+                <div className="flex items-start">
+                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                    <span className="text-white text-xs font-bold">i</span>
+                  </div>
+                  <div>
+                    <p className="text-blue-800 text-sm font-medium mb-1">¿Por qué necesitamos estos datos?</p>
+                    <p className="text-blue-700 text-sm">
+                      Para poder contactarte y enviarte tu presupuesto personalizado con todos los detalles de tu proyecto.
+                    </p>
+                  </div>
                 </div>
               </div>
             </form>
 
             {/* Actions */}
-            <div className="flex gap-3 p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-100 flex gap-3">
               <button
-                onClick={onClose}
-                className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-medium transition-colors"
+                type="button"
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-2xl font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button
+                type="submit"
                 onClick={handleSubmit}
-                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-medium transition-colors flex items-center justify-center"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                <Save size={16} className="mr-2" />
-                Guardar Datos
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Guardar Datos
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
