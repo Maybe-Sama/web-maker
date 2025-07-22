@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ArrowRight,
   ArrowLeft,
@@ -27,6 +27,7 @@ import {
 import { motion } from "framer-motion"
 import BudgetRequestModal from "@/components/BudgetRequestModal"
 import ContactWarningModal from "@/components/ContactWarningModal"
+import ContactDataModal from "@/components/ContactDataModal"
 
 interface Service {
   id: string
@@ -287,6 +288,7 @@ const planSteps: PlanStep[] = [
 ]
 
 export default function CreatePlanPage() {
+  // Estado persistente usando localStorage
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: number }>({})
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null)
@@ -298,6 +300,39 @@ export default function CreatePlanPage() {
     company: ""
   })
   const [showContactWarning, setShowContactWarning] = useState(false)
+  const [isContactDataModalOpen, setIsContactDataModalOpen] = useState(false)
+
+  // Cargar estado guardado al montar el componente
+  useEffect(() => {
+    const savedState = localStorage.getItem('createPlanState')
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState)
+        setCurrentStep(parsedState.currentStep || 1)
+        setSelectedServices(parsedState.selectedServices || {})
+        setSelectedBundle(parsedState.selectedBundle || null)
+        setContactData(parsedState.contactData || {
+          name: "",
+          email: "",
+          phone: "",
+          company: ""
+        })
+      } catch (error) {
+        console.error('Error loading saved state:', error)
+      }
+    }
+  }, [])
+
+  // Guardar estado cuando cambie
+  useEffect(() => {
+    const stateToSave = {
+      currentStep,
+      selectedServices,
+      selectedBundle,
+      contactData
+    }
+    localStorage.setItem('createPlanState', JSON.stringify(stateToSave))
+  }, [currentStep, selectedServices, selectedBundle, contactData])
 
 
 
@@ -452,6 +487,10 @@ export default function CreatePlanPage() {
         throw new Error(result.error || "Error enviando la solicitud de presupuesto");
       }
 
+      // Limpiar estado después de enviar exitosamente
+      clearPlanState()
+      setIsBudgetModalOpen(false)
+
       return result;
     } catch (error) {
       console.error("Error enviando presupuesto:", error);
@@ -475,9 +514,8 @@ export default function CreatePlanPage() {
 
   const handleAddContactData = () => {
     setShowContactWarning(false)
-    // Navegar de vuelta al paso 1 para añadir datos de contacto
-    setSelectedBundle(null)
-    setCurrentStep(1)
+    // Abrir modal de datos de contacto
+    setIsContactDataModalOpen(true)
   }
 
   const handleAddDataButton = () => {
@@ -485,9 +523,26 @@ export default function CreatePlanPage() {
       setShowContactWarning(true)
       return
     }
-    // Si los datos están completos, navegar de vuelta al paso 1
-    setSelectedBundle(null)
+    // Si los datos están completos, abrir modal para modificarlos
+    setIsContactDataModalOpen(true)
+  }
+
+  const handleSaveContactData = (data: { name: string; email: string; phone: string; company: string }) => {
+    setContactData(data)
+    setIsContactDataModalOpen(false)
+  }
+
+  const clearPlanState = () => {
     setCurrentStep(1)
+    setSelectedServices({})
+    setSelectedBundle(null)
+    setContactData({
+      name: "",
+      email: "",
+      phone: "",
+      company: ""
+    })
+    localStorage.removeItem('createPlanState')
   }
 
   if (currentStep > planSteps.length) {
@@ -667,6 +722,13 @@ export default function CreatePlanPage() {
                     >
                       {isContactDataComplete() ? 'Modificar Configuración' : 'Añadir Datos de Contacto'}
                     </button>
+                    
+                    <button
+                      onClick={clearPlanState}
+                      className="w-full bg-red-600 hover:bg-red-500 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
+                    >
+                      Empezar Plan Nuevo
+                    </button>
                   </div>
 
                   {/* Información de mantenimiento */}
@@ -719,6 +781,14 @@ export default function CreatePlanPage() {
             isOpen={showContactWarning}
             onClose={() => setShowContactWarning(false)}
             onAddContactData={handleAddContactData}
+          />
+
+          {/* Modal de datos de contacto */}
+          <ContactDataModal
+            isOpen={isContactDataModalOpen}
+            onClose={() => setIsContactDataModalOpen(false)}
+            onSave={handleSaveContactData}
+            initialData={contactData}
           />
 
 
