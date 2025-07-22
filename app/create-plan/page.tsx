@@ -473,8 +473,19 @@ export default function CreatePlanPage() {
 
   const handleAddContactData = () => {
     setShowContactWarning(false)
-    // Aquí podrías navegar a un paso específico para añadir datos de contacto
-    // Por ahora, simplemente cerramos el modal de advertencia
+    // Navegar de vuelta al paso 1 para añadir datos de contacto
+    setSelectedBundle(null)
+    setCurrentStep(1)
+  }
+
+  const handleAddDataButton = () => {
+    if (!isContactDataComplete()) {
+      setShowContactWarning(true)
+      return
+    }
+    // Si los datos están completos, navegar de vuelta al paso 1
+    setSelectedBundle(null)
+    setCurrentStep(1)
   }
 
   if (currentStep > planSteps.length) {
@@ -649,13 +660,10 @@ export default function CreatePlanPage() {
                       {isContactDataComplete() ? 'Solicitar Presupuesto' : 'Solicitar Presupuesto (Faltan Datos)'}
                     </button>
                     <button
-                      onClick={() => {
-                        setSelectedBundle(null)
-                        setCurrentStep(1)
-                      }}
+                      onClick={handleAddDataButton}
                       className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
                     >
-                      Añadir Datos
+                      {isContactDataComplete() ? 'Modificar Configuración' : 'Añadir Datos de Contacto'}
                     </button>
                   </div>
 
