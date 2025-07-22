@@ -693,6 +693,24 @@ export default function CreatePlanPage() {
             </div>
           </div>
         </div>
+
+        {/* Modales */}
+        <BudgetRequestModal
+          isOpen={isBudgetModalOpen}
+          onClose={() => setIsBudgetModalOpen(false)}
+          onSubmit={handleBudgetSubmit}
+          selectedServices={selectedServices}
+          selectedBundle={selectedBundle}
+          totalPrice={calculateTotal()}
+          servicesDetails={getSelectedServicesDetails()}
+          contactData={contactData}
+        />
+
+        <ContactWarningModal
+          isOpen={showContactWarning}
+          onClose={() => setShowContactWarning(false)}
+          onAddContactData={handleAddContactData}
+        />
       </motion.div>
     )
   }
@@ -917,24 +935,6 @@ export default function CreatePlanPage() {
           </div>
         </div>
       </div>
-
-      {/* Modales */}
-      <BudgetRequestModal
-        isOpen={isBudgetModalOpen}
-        onClose={() => setIsBudgetModalOpen(false)}
-        onSubmit={handleBudgetSubmit}
-        selectedServices={selectedServices}
-        selectedBundle={selectedBundle}
-        totalPrice={calculateTotal()}
-        servicesDetails={getSelectedServicesDetails()}
-        contactData={contactData}
-      />
-
-      <ContactWarningModal
-        isOpen={showContactWarning}
-        onClose={() => setShowContactWarning(false)}
-        onAddContactData={handleAddContactData}
-      />
     </motion.div>
   )
 }
