@@ -108,7 +108,7 @@ export default function ContactWarningModal({
                 onClick={onAddContactData}
                 className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-medium transition-colors"
               >
-                Ir a Añadir Datos
+                Añadir Datos
               </button>
             </div>
           </motion.div>

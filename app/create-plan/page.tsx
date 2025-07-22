@@ -27,7 +27,6 @@ import {
 import { motion } from "framer-motion"
 import BudgetRequestModal from "@/components/BudgetRequestModal"
 import ContactWarningModal from "@/components/ContactWarningModal"
-import ContactDataModal from "@/components/ContactDataModal"
 
 interface Service {
   id: string
@@ -299,7 +298,6 @@ export default function CreatePlanPage() {
     company: ""
   })
   const [showContactWarning, setShowContactWarning] = useState(false)
-  const [showContactDataModal, setShowContactDataModal] = useState(false)
 
   const selectBundle = (bundleId: string) => {
     const bundle = bundles.find((b) => b.id === bundleId)
@@ -460,27 +458,26 @@ export default function CreatePlanPage() {
   };
 
   const isContactDataComplete = () => {
-    return contactData.name.trim() !== "" && 
+    const isComplete = contactData.name.trim() !== "" && 
            contactData.email.trim() !== "" && 
            contactData.phone.trim() !== ""
+    console.log("Contact data complete:", isComplete, contactData)
+    return isComplete
   }
 
   const handleRequestBudget = () => {
+    console.log("Request budget clicked, contact data complete:", isContactDataComplete())
     if (!isContactDataComplete()) {
-      setShowContactDataModal(true)
+      console.log("Opening contact warning modal")
+      setShowContactWarning(true)
       return
     }
+    console.log("Opening budget modal")
     setIsBudgetModalOpen(true)
   }
 
   const handleAddContactData = () => {
     setShowContactWarning(false)
-    setShowContactDataModal(true)
-  }
-
-  const handleSaveContactData = (data: any) => {
-    setContactData(data)
-    // Después de guardar los datos, abrir el modal de presupuesto
     setIsBudgetModalOpen(true)
   }
 
@@ -656,7 +653,7 @@ export default function CreatePlanPage() {
                       {isContactDataComplete() ? 'Solicitar Presupuesto' : 'Solicitar Presupuesto (Faltan Datos)'}
                     </button>
                     <button
-                      onClick={() => setShowContactDataModal(true)}
+                      onClick={() => setIsBudgetModalOpen(true)}
                       className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
                     >
                       Añadir Datos
@@ -921,7 +918,7 @@ export default function CreatePlanPage() {
         </div>
       </div>
 
-      {/* Modal de solicitud de presupuesto */}
+      {/* Modales */}
       <BudgetRequestModal
         isOpen={isBudgetModalOpen}
         onClose={() => setIsBudgetModalOpen(false)}
@@ -933,19 +930,10 @@ export default function CreatePlanPage() {
         contactData={contactData}
       />
 
-      {/* Modal de advertencia de datos de contacto */}
       <ContactWarningModal
         isOpen={showContactWarning}
         onClose={() => setShowContactWarning(false)}
         onAddContactData={handleAddContactData}
-      />
-
-      {/* Modal de datos de contacto */}
-      <ContactDataModal
-        isOpen={showContactDataModal}
-        onClose={() => setShowContactDataModal(false)}
-        onSave={handleSaveContactData}
-        initialData={contactData}
       />
     </motion.div>
   )
