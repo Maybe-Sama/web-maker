@@ -288,6 +288,7 @@ export default function ContactPage() {
   const [phoneError, setPhoneError] = useState<string | null>(null)
   const [showValidationError, setShowValidationError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -339,7 +340,7 @@ export default function ContactPage() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     setShowValidationError(false)
     setValidationErrorMessage("")
     
@@ -390,20 +391,33 @@ export default function ContactPage() {
       }
     }
     if (activeStep === 7) {
-      // Enviar formulario
-      fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-        .then(res => {
-          if (!res.ok) throw new Error("Error enviando el formulario");
-          setIsSubmitted(true);
-        })
-        .catch(() => {
-          setValidationErrorMessage("Hubo un error enviando el formulario. Intenta de nuevo.");
-          setShowValidationError(true);
+      // Enviar formulario con mejor manejo de errores
+      setIsSubmitting(true);
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
         });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          setIsSubmitted(true);
+        } else {
+          // Error específico del servidor
+          const errorMessage = result.error || "Error desconocido del servidor";
+          setValidationErrorMessage(`Error: ${errorMessage}`);
+          setShowValidationError(true);
+        }
+      } catch (error) {
+        // Error de red o conexión
+        console.error("Error enviando formulario:", error);
+        setValidationErrorMessage("Error de conexión. Verifica tu internet e intenta de nuevo.");
+        setShowValidationError(true);
+      } finally {
+        setIsSubmitting(false);
+      }
       return
     }
     
@@ -648,8 +662,12 @@ export default function ContactPage() {
                         Siguiente
                       </button>
                     ) : (
-                      <button onClick={handleNext} className="next-button bg-green-600 hover:bg-green-700">
-                        Enviar Solicitud
+                      <button 
+                        onClick={handleNext} 
+                        disabled={isSubmitting}
+                        className={`next-button bg-green-600 hover:bg-green-700 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isSubmitting ? 'Enviando...' : 'Enviar Solicitud'}
                       </button>
                     )}
                   </div>
