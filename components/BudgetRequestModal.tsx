@@ -12,6 +12,12 @@ interface BudgetRequestModalProps {
   selectedBundle?: string | null
   totalPrice: number
   servicesDetails: any[]
+  contactData?: {
+    name: string
+    email: string
+    phone: string
+    company: string
+  }
 }
 
 interface FormData {
@@ -31,13 +37,14 @@ export default function BudgetRequestModal({
   selectedServices,
   selectedBundle,
   totalPrice,
-  servicesDetails
+  servicesDetails,
+  contactData
 }: BudgetRequestModalProps) {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
+    name: contactData?.name || "",
+    email: contactData?.email || "",
+    phone: contactData?.phone || "",
+    company: contactData?.company || "",
     projectDescription: "",
     timeline: "",
     additionalRequirements: ""

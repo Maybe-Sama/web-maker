@@ -26,6 +26,7 @@ import {
 } from "lucide-react"
 import { motion } from "framer-motion"
 import BudgetRequestModal from "@/components/BudgetRequestModal"
+import ContactWarningModal from "@/components/ContactWarningModal"
 
 interface Service {
   id: string
@@ -290,6 +291,13 @@ export default function CreatePlanPage() {
   const [selectedServices, setSelectedServices] = useState<{ [key: string]: number }>({})
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null)
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false)
+  const [contactData, setContactData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: ""
+  })
+  const [showContactWarning, setShowContactWarning] = useState(false)
 
   const selectBundle = (bundleId: string) => {
     const bundle = bundles.find((b) => b.id === bundleId)
@@ -420,6 +428,16 @@ export default function CreatePlanPage() {
 
   const handleBudgetSubmit = async (budgetData: any) => {
     try {
+      // Actualizar datos de contacto si se proporcionan
+      if (budgetData.name && budgetData.email && budgetData.phone) {
+        setContactData({
+          name: budgetData.name,
+          email: budgetData.email,
+          phone: budgetData.phone,
+          company: budgetData.company || ""
+        })
+      }
+
       const response = await fetch("/api/budget", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -438,6 +456,26 @@ export default function CreatePlanPage() {
       throw error;
     }
   };
+
+  const isContactDataComplete = () => {
+    return contactData.name.trim() !== "" && 
+           contactData.email.trim() !== "" && 
+           contactData.phone.trim() !== ""
+  }
+
+  const handleRequestBudget = () => {
+    if (!isContactDataComplete()) {
+      setShowContactWarning(true)
+      return
+    }
+    setIsBudgetModalOpen(true)
+  }
+
+  const handleAddContactData = () => {
+    setShowContactWarning(false)
+    // Aquí podrías navegar a un paso específico para añadir datos de contacto
+    // Por ahora, simplemente cerramos el modal de advertencia
+  }
 
   if (currentStep > planSteps.length) {
     const recommendations = getRecommendations()
@@ -575,15 +613,40 @@ export default function CreatePlanPage() {
                 <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700">
                   <h2 className="text-2xl font-light mb-4 text-white">Inversión Total</h2>
                   <div className="text-5xl font-light mb-6 text-white">{calculateTotal().toLocaleString()}€</div>
-                  <p className="text-slate-400 mb-8">
+                  <p className="text-slate-400 mb-6">
                     {selectedBundle ? "Precio del kit seleccionado" : "Precio final de tu proyecto personalizado"}
                   </p>
+                  
+                  {/* Estado de datos de contacto */}
+                  <div className={`mb-6 p-4 rounded-2xl border ${
+                    isContactDataComplete() 
+                      ? 'bg-green-500/10 border-green-400/20' 
+                      : 'bg-amber-500/10 border-amber-400/20'
+                  }`}>
+                    <div className="flex items-center">
+                      <div className={`w-3 h-3 rounded-full mr-3 ${
+                        isContactDataComplete() ? 'bg-green-400' : 'bg-amber-400'
+                      }`}></div>
+                      <span className={`text-sm font-medium ${
+                        isContactDataComplete() ? 'text-green-300' : 'text-amber-300'
+                      }`}>
+                        {isContactDataComplete() 
+                          ? '✅ Datos de contacto completos' 
+                          : '⚠️ Faltan datos de contacto'
+                        }
+                      </span>
+                    </div>
+                  </div>
                   <div className="space-y-4">
                     <button 
-                      onClick={() => setIsBudgetModalOpen(true)}
-                      className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-2xl font-medium transition-colors"
+                      onClick={handleRequestBudget}
+                      className={`w-full py-4 px-6 rounded-2xl font-medium transition-colors ${
+                        isContactDataComplete() 
+                          ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+                          : 'bg-amber-500 hover:bg-amber-400 text-white'
+                      }`}
                     >
-                      Solicitar Presupuesto
+                      {isContactDataComplete() ? 'Solicitar Presupuesto' : 'Solicitar Presupuesto (Faltan Datos)'}
                     </button>
                     <button
                       onClick={() => {
@@ -592,7 +655,7 @@ export default function CreatePlanPage() {
                       }}
                       className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
                     >
-                      Modificar Configuración
+                      Añadir Datos
                     </button>
                   </div>
 
@@ -863,6 +926,14 @@ export default function CreatePlanPage() {
         selectedBundle={selectedBundle}
         totalPrice={calculateTotal()}
         servicesDetails={getSelectedServicesDetails()}
+        contactData={contactData}
+      />
+
+      {/* Modal de advertencia de datos de contacto */}
+      <ContactWarningModal
+        isOpen={showContactWarning}
+        onClose={() => setShowContactWarning(false)}
+        onAddContactData={handleAddContactData}
       />
     </motion.div>
   )

@@ -78,14 +78,7 @@ npm install @resend/node
 4. **Rellena el modal** con tus datos y envía
 5. **Verifica los resultados** en consola o email
 
-### Scripts de Testing
-```bash
-# Probar servicio de contacto
-node test-email.js
 
-# Probar servicio de presupuestos
-node test-budget.js
-```
 
 ## 🔍 Solución de Problemas
 
