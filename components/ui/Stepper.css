@@ -1,0 +1,182 @@
+.outer-container {
+  width: 100%;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+.step-circle-container {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.step-indicator-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.step-indicator-inner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+}
+
+.active-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background-color: white;
+}
+
+.check-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.step-number {
+    color: #666;
+}
+
+.step-connector {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #e0e0e0;
+  margin: 0 0.5rem;
+  position: relative;
+}
+
+.step-connector-inner {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.step-content-default {
+  margin-bottom: 3rem;
+}
+
+.step-default {
+  text-align: center;
+}
+.step-default h2 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--text-headers);
+  margin-bottom: 1rem;
+}
+
+.step-default p {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.footer-container {
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.footer-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.footer-nav.spread {
+    justify-content: space-between;
+}
+
+.back-button,
+.next-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+}
+
+.back-button {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.back-button:hover {
+    background-color: #e0e0e0;
+}
+
+.next-button {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+.next-button:hover {
+    opacity: 0.9;
+}
+
+/* Custom styles for inputs etc */
+.form-input, .form-textarea, .form-radio-group, .form-checkbox-group {
+    text-align: left;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-input input, .form-textarea textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-input input:focus, .form-textarea textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-headers);
+}
+
+.form-radio-group .radio-option, .form-checkbox-group .checkbox-option {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.form-radio-group .radio-option.selected, .form-checkbox-group .checkbox-option.selected {
+    border-color: var(--color-primary);
+    background-color: var(--bg-primary);
+}
+
+.form-radio-group input, .form-checkbox-group input {
+    margin-right: 1rem;
+    accent-color: var(--color-primary);
+    width: 1rem;
+    height: 1rem;
+} 
