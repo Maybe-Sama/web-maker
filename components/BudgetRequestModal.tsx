@@ -149,13 +149,13 @@ export default function BudgetRequestModal({
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full text-center"
+              className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 max-w-md w-full text-center border border-white/10 backdrop-blur-sm"
             >
-              <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+              <div className="w-20 h-20 bg-green-500/20 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">¡Presupuesto Enviado!</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-2xl font-bold mb-4 text-white">¡Presupuesto Enviado!</h2>
+              <p className="text-slate-300 mb-6">
                 Hemos recibido tu solicitud de presupuesto. Te contactaremos en menos de 24 horas con una propuesta detallada.
               </p>
               <button
@@ -184,21 +184,21 @@ export default function BudgetRequestModal({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/10 backdrop-blur-sm"
           >
             {/* Header */}
-            <div className="p-8 border-b border-gray-100">
+            <div className="p-8 border-b border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Solicitar Presupuesto</h2>
-                  <p className="text-gray-600 mt-2">Completa tus datos para recibir tu presupuesto personalizado</p>
+                  <h2 className="text-2xl font-bold text-white">Solicitar Presupuesto</h2>
+                  <p className="text-slate-300 mt-2">Completa tus datos para recibir tu presupuesto personalizado</p>
                 </div>
                 <button
                   onClick={handleClose}
                   disabled={isSubmitting}
-                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors disabled:opacity-50"
                 >
-                  <X className="w-5 h-5 text-gray-600" />
+                  <X className="w-5 h-5 text-slate-300" />
                 </button>
               </div>
             </div>
@@ -208,13 +208,13 @@ export default function BudgetRequestModal({
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Datos personales */}
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <User className="w-5 h-5 mr-2 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-white flex items-center">
+                    <User className="w-5 h-5 mr-2 text-blue-400" />
                     Datos Personales
                   </h3>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Nombre completo *
                     </label>
                     <input
@@ -222,8 +222,8 @@ export default function BudgetRequestModal({
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                        errors.name ? 'border-red-300' : 'border-gray-300'
+                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-slate-800/50 text-white placeholder-slate-400 ${
+                        errors.name ? 'border-red-400' : 'border-slate-600'
                       }`}
                       placeholder="Tu nombre completo"
                     />
@@ -236,7 +236,7 @@ export default function BudgetRequestModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Email *
                     </label>
                     <input
@@ -244,13 +244,13 @@ export default function BudgetRequestModal({
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                        errors.email ? 'border-red-300' : 'border-gray-300'
+                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-slate-800/50 text-white placeholder-slate-400 ${
+                        errors.email ? 'border-red-400' : 'border-slate-600'
                       }`}
                       placeholder="tu@email.com"
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <p className="text-red-400 text-sm mt-1 flex items-center">
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.email}
                       </p>
@@ -258,7 +258,7 @@ export default function BudgetRequestModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Teléfono *
                     </label>
                     <input
@@ -266,13 +266,13 @@ export default function BudgetRequestModal({
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                        errors.phone ? 'border-red-300' : 'border-gray-300'
+                      className={`w-full px-4 py-3 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-slate-800/50 text-white placeholder-slate-400 ${
+                        errors.phone ? 'border-red-400' : 'border-slate-600'
                       }`}
                       placeholder="612 345 678"
                     />
                     {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1 flex items-center">
+                      <p className="text-red-400 text-sm mt-1 flex items-center">
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.phone}
                       </p>
@@ -280,7 +280,7 @@ export default function BudgetRequestModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Empresa (opcional)
                     </label>
                     <input
@@ -288,7 +288,7 @@ export default function BudgetRequestModal({
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-slate-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-slate-800/50 text-white placeholder-slate-400"
                       placeholder="Nombre de tu empresa"
                     />
                   </div>
@@ -296,13 +296,13 @@ export default function BudgetRequestModal({
 
                 {/* Detalles del proyecto */}
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-white flex items-center">
+                    <FileText className="w-5 h-5 mr-2 text-blue-400" />
                     Detalles del Proyecto
                   </h3>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Descripción del proyecto (opcional)
                     </label>
                     <textarea
@@ -310,20 +310,20 @@ export default function BudgetRequestModal({
                       value={formData.projectDescription}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-slate-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none bg-slate-800/50 text-white placeholder-slate-400"
                       placeholder="Cuéntanos más sobre tu proyecto..."
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Plazo deseado (opcional)
                     </label>
                     <select
                       name="timeline"
                       value={formData.timeline}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-slate-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-slate-800/50 text-white"
                     >
                       <option value="">Selecciona un plazo</option>
                       <option value="Urgente (1-2 semanas)">Urgente (1-2 semanas)</option>
@@ -334,7 +334,7 @@ export default function BudgetRequestModal({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
                       Requisitos adicionales (opcional)
                     </label>
                     <textarea
@@ -342,7 +342,7 @@ export default function BudgetRequestModal({
                       value={formData.additionalRequirements}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-slate-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none bg-slate-800/50 text-white placeholder-slate-400"
                       placeholder="Algún requisito especial o funcionalidad específica..."
                     />
                   </div>
@@ -350,19 +350,19 @@ export default function BudgetRequestModal({
               </div>
 
               {/* Resumen del presupuesto */}
-              <div className="mt-8 p-6 bg-gray-50 rounded-2xl">
-                <h4 className="font-semibold text-gray-900 mb-4">Resumen de tu configuración</h4>
+              <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10">
+                <h4 className="font-semibold text-white mb-4">Resumen de tu configuración</h4>
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-600">
+                    <p className="text-slate-300">
                       {selectedBundle ? 'Kit seleccionado' : `${Object.keys(selectedServices).length} servicios`}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-slate-400">
                       {selectedBundle || 'Configuración personalizada'}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-blue-600">{totalPrice.toLocaleString()}€</p>
+                    <p className="text-2xl font-bold text-blue-400">{totalPrice.toLocaleString()}€</p>
                   </div>
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function BudgetRequestModal({
                   type="button"
                   onClick={handleClose}
                   disabled={isSubmitting}
-                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-2xl font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                  className="flex-1 px-6 py-3 border border-slate-600 text-slate-300 rounded-2xl font-medium hover:bg-slate-700 transition-colors disabled:opacity-50"
                 >
                   Cancelar
                 </button>
