@@ -307,7 +307,7 @@ const planSteps: PlanStep[] = [
       {
         id: "hosting",
         name: "Hosting (2º año)",
-        description: "Servidor optimizado. Renovación automática opcional. 60 €/año.",
+        description: "Servidor optimizado. Renovación automática opcional. 60 €/año.",
         price: 60,
         icon: Server,
         popular: true,
@@ -683,118 +683,120 @@ export default function CreatePlanPage() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
       >
-        <div className="container-custom py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-16">
-              <div className="w-20 h-20 bg-slate-100 rounded-2xl mx-auto mb-8 flex items-center justify-center shadow-xl">
-                <Sparkles className="text-slate-800" size={32} />
+            <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-2xl mx-auto mb-4 sm:mb-6 lg:mb-8 flex items-center justify-center shadow-xl">
+                <Sparkles className="text-slate-800" size={24} />
               </div>
-              <h1 className="text-5xl md:text-6xl font-light mb-6 text-white tracking-tight">Resumen del Proyecto</h1>
-              <p className="text-xl text-slate-300 max-w-2xl mx-auto font-light">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-4 sm:mb-6 text-white tracking-tight">Resumen del Proyecto</h1>
+              <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-light px-4">
                 {selectedBundle ? "Kit seleccionado" : "Tu configuración personalizada está lista"}
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               {/* Resumen de servicios */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-                <h2 className="text-2xl font-light mb-8 flex items-center text-white">
-                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mr-4">
+              <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/10">
+                <h2 className="text-xl sm:text-2xl font-light mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center text-white">
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center mb-2 sm:mb-0 sm:mr-4">
                     <Calculator className="text-slate-800" size={20} />
                   </div>
-                  {selectedBundle ? "Kit Seleccionado" : "Servicios Seleccionados"}
+                  <span className="text-center sm:text-left">
+                    {selectedBundle ? "Kit Seleccionado" : "Servicios Seleccionados"}
+                  </span>
                 </h2>
 
                 {/* Información de servicios incluidos */}
-                <div className="mb-6 p-4 bg-green-500/10 border border-green-400/20 rounded-2xl">
+                <div className="mb-6 p-3 sm:p-4 bg-green-500/10 border border-green-400/20 rounded-2xl">
                   <div className="flex items-center mb-2">
-                    <Check className="text-green-400 mr-2" size={20} />
-                    <span className="text-green-400 font-medium">Servicios Incluidos Automáticamente</span>
+                    <Check className="text-green-400 mr-2 flex-shrink-0" size={20} />
+                    <span className="text-green-400 font-medium text-sm sm:text-base">Servicios Incluidos Automáticamente</span>
                   </div>
-                  <p className="text-slate-300 text-sm mb-2">
+                  <p className="text-slate-300 text-xs sm:text-sm mb-2">
                     Todos los proyectos incluyen gratuitamente: dominio 1º año, SSL, hosting 1º año, Analytics GA4, 
                     botón WhatsApp, mapa Google, reCAPTCHA y hasta 5 emails corporativos.
                   </p>
-                  <p className="text-green-400 text-sm">
+                  <p className="text-green-400 text-xs sm:text-sm">
                     Valor total de inclusiones: 60€
                   </p>
                 </div>
 
                 {selectedBundle && (
-                  <div className="mb-6 p-4 bg-blue-500/10 border border-blue-400/20 rounded-2xl">
+                  <div className="mb-6 p-3 sm:p-4 bg-blue-500/10 border border-blue-400/20 rounded-2xl">
                     <div className="flex items-center mb-2">
-                      <Sparkles className="text-blue-400 mr-2" size={20} />
-                      <span className="text-blue-400 font-medium">
+                      <Sparkles className="text-blue-400 mr-2 flex-shrink-0" size={20} />
+                      <span className="text-blue-400 font-medium text-sm sm:text-base">
                         {bundles.find((b) => b.id === selectedBundle)?.name}
                       </span>
                     </div>
-                    <p className="text-slate-300 text-sm">
+                    <p className="text-slate-300 text-xs sm:text-sm">
                       {bundles.find((b) => b.id === selectedBundle)?.description}
                     </p>
-                    <p className="text-green-400 text-sm mt-2">
+                    <p className="text-green-400 text-xs sm:text-sm mt-2">
                       Ahorras {bundles.find((b) => b.id === selectedBundle)?.savings}€ con este pack
                     </p>
                   </div>
                 )}
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {getSelectedServicesDetails().map((service) => (
                     <div
                       key={service?.id}
-                      className={`rounded-2xl p-6 border transition-colors ${
+                      className={`rounded-2xl p-3 sm:p-4 lg:p-6 border transition-colors ${
                         service?.included 
                           ? 'bg-green-500/10 border-green-400/20' 
                           : 'bg-white/5 border-white/5 hover:bg-white/10'
                       }`}
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
                         <div className="flex-1">
                           <div className="flex items-center mb-2">
                             {service?.icon && (
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${
+                              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${
                                 service?.included ? 'bg-green-500' : 'bg-slate-100'
                               }`}>
-                                <service.icon className={service?.included ? 'text-white' : 'text-slate-800'} size={16} />
+                                <service.icon className={service?.included ? 'text-white' : 'text-slate-800'} size={14} />
                               </div>
                             )}
-                            <div className="flex items-center">
-                              <h3 className="font-medium text-white">{service?.name}</h3>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                              <h3 className="font-medium text-white text-sm sm:text-base">{service?.name}</h3>
                               {service?.included && (
-                                <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">
+                                <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full w-fit">
                                   Incluido
                                 </span>
                               )}
                               {service?.tag && !service?.included && (
-                                <span className="ml-2 px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">
+                                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full w-fit">
                                   {service.tag}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <p className="text-slate-400 text-sm">{service?.description}</p>
+                          <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{service?.description}</p>
                         </div>
-                        <div className="flex items-center space-x-4 ml-6">
+                        <div className="flex flex-row sm:flex-col items-center justify-between sm:justify-end gap-4 sm:gap-2 sm:ml-6">
                           {!selectedBundle && !service?.included && (
                             <button
                               onClick={() => removeService(service?.id || "")}
-                              className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg text-sm font-medium transition-colors"
+                              className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 rounded-lg text-xs font-medium transition-colors"
                             >
                               Eliminar
                             </button>
                           )}
                           <div className="text-right min-w-[80px]">
                             {service?.included ? (
-                              <span className="font-semibold text-lg text-green-400">
+                              <span className="font-semibold text-base sm:text-lg text-green-400">
                                 Incluido
                               </span>
                             ) : selectedBundle ? (
-                              <span className="font-semibold text-lg text-white">
+                              <span className="font-semibold text-base sm:text-lg text-white">
                                 {/* Sin precio en kits */}
                               </span>
                             ) : (
                               <div className="text-right">
-                                <span className="font-semibold text-lg text-white">
+                                <span className="font-semibold text-base sm:text-lg text-white">
                                   {service?.price?.toLocaleString()}€
                                 </span>
                               </div>
@@ -808,21 +810,21 @@ export default function CreatePlanPage() {
 
                 {/* Recomendaciones */}
                 {recommendations.length > 0 && !selectedBundle && (
-                  <div className="mt-8 p-6 bg-amber-500/10 border border-amber-400/20 rounded-2xl">
+                  <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-amber-500/10 border border-amber-400/20 rounded-2xl">
                     <div className="flex items-center mb-4">
-                      <AlertCircle className="text-amber-400 mr-2" size={20} />
-                      <h3 className="text-amber-400 font-medium">¿Sabías que puedes mejorar aún más tu proyecto?</h3>
+                      <AlertCircle className="text-amber-400 mr-2 flex-shrink-0" size={20} />
+                      <h3 className="text-amber-400 font-medium text-sm sm:text-base">¿Sabías que puedes mejorar aún más tu proyecto?</h3>
                     </div>
-                    <p className="text-slate-300 text-sm mb-4">Te recomendamos añadir:</p>
+                    <p className="text-slate-300 text-xs sm:text-sm mb-4">Te recomendamos añadir:</p>
                     <div className="space-y-2">
                       {recommendations.map((rec) => (
-                        <div key={rec.service} className="flex justify-between items-center text-sm">
+                        <div key={rec.service} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs sm:text-sm">
                           <span className="text-slate-300">
                             • {rec.name} {rec.reason} ({rec.price}€)
                           </span>
                           <button
                             onClick={() => toggleService(rec.service, rec.price)}
-                            className="text-amber-400 hover:text-amber-300 font-medium"
+                            className="text-amber-400 hover:text-amber-300 font-medium w-fit"
                           >
                             Añadir
                           </button>
@@ -831,30 +833,28 @@ export default function CreatePlanPage() {
                     </div>
                   </div>
                 )}
-
-
               </div>
 
               {/* Total y CTA */}
-              <div className="space-y-6">
-                <div className="bg-slate-800 rounded-3xl p-8 border border-slate-700">
-                  <h2 className="text-2xl font-light mb-4 text-white">Inversión Total</h2>
-                  <div className="text-5xl font-light mb-6 text-white">{calculateTotal().toLocaleString()}€</div>
-                  <p className="text-slate-400 mb-6">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="bg-slate-800 rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-700">
+                  <h2 className="text-xl sm:text-2xl font-light mb-4 text-white">Inversión Total</h2>
+                  <div className="text-4xl sm:text-5xl font-light mb-4 sm:mb-6 text-white">{calculateTotal().toLocaleString()}€</div>
+                  <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
                     {selectedBundle ? "Precio del kit seleccionado" : "Precio final de tu proyecto personalizado"}
                   </p>
                   
                   {/* Estado de datos de contacto */}
-                  <div className={`mb-6 p-4 rounded-2xl border ${
+                  <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-2xl border ${
                     isContactDataComplete() 
                       ? 'bg-green-500/10 border-green-400/20' 
                       : 'bg-amber-500/10 border-amber-400/20'
                   }`}>
                     <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-3 ${
+                      <div className={`w-3 h-3 rounded-full mr-3 flex-shrink-0 ${
                         isContactDataComplete() ? 'bg-green-400' : 'bg-amber-400'
                       }`}></div>
-                      <span className={`text-sm font-medium ${
+                      <span className={`text-xs sm:text-sm font-medium ${
                         isContactDataComplete() ? 'text-green-300' : 'text-amber-300'
                       }`}>
                         {isContactDataComplete() 
@@ -864,10 +864,10 @@ export default function CreatePlanPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <button 
                       onClick={handleRequestBudget}
-                      className={`w-full py-4 px-6 rounded-2xl font-medium transition-colors ${
+                      className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-medium transition-colors text-sm sm:text-base ${
                         isContactDataComplete() 
                           ? 'bg-blue-600 hover:bg-blue-500 text-white' 
                           : 'bg-amber-500 hover:bg-amber-400 text-white'
@@ -877,20 +877,20 @@ export default function CreatePlanPage() {
                     </button>
                     <button
                       onClick={() => setIsBudgetModalOpen(true)}
-                      className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 px-6 rounded-2xl font-medium transition-colors"
+                      className="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-2xl font-medium transition-colors text-sm sm:text-base"
                     >
                       Añadir Datos
                     </button>
                   </div>
 
                   {/* Información de mantenimiento */}
-                  <div className="mt-8 pt-6 border-t border-slate-700">
-                    <p className="text-slate-400 text-sm mb-3">
+                  <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700">
+                    <p className="text-slate-400 text-xs sm:text-sm mb-3">
                       <strong className="text-white">Incluido en el precio:</strong> Diseño personalizado y profesional, 
                       desarrollo movil optimizado, 30 días de soporte técnico*, dominio**, formación para gestión autónoma, 
                       configuración y lanzamiento completo.
                     </p>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-slate-400 text-xs sm:text-sm">
                       *Incluye <strong className="text-white">30 días de mantenimiento gratuito</strong> tras la entrega.{" "}
                       Después, puedes contratar nuestro plan de soporte técnico por solo{" "}
                       <strong className="text-white">20 €/mes</strong>, que cubre actualizaciones, seguridad,
@@ -900,27 +900,28 @@ export default function CreatePlanPage() {
                   </div>
                 </div>
 
-          {/* Price Summary */}
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50">
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="text-xl font-medium mb-2 text-white">Precio Actual</h3>
-                <p className="text-slate-400">{Object.keys(selectedServices).length} servicios seleccionados</p>
-              </div>
-              <div className="text-right">
-                <div className="text-4xl font-light text-white">{calculateTotal().toLocaleString()}€</div>
-              </div>
-            </div>
-          </div>
+                {/* Price Summary */}
+                <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12 border border-slate-700/50">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-medium mb-2 text-white">Precio Actual</h3>
+                      <p className="text-slate-400 text-sm sm:text-base">{Object.keys(selectedServices).length} servicios seleccionados</p>
+                    </div>
+                    <div className="text-center sm:text-right">
+                      <div className="text-3xl sm:text-4xl font-light text-white">{calculateTotal().toLocaleString()}€</div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Servicios adicionales disponibles */}
                 {!selectedBundle && getAllAvailableServices().length > 0 && (
-                  <div className="bg-blue-500/10 border border-blue-400/20 rounded-3xl p-6">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="bg-blue-500/10 border border-blue-400/20 rounded-3xl p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                       <div className="flex items-center">
-                        <Plus className="text-blue-400 mr-2" size={20} />
-                        <h3 className="text-blue-400 font-medium">¿Quieres añadir algo más?</h3>
+                        <Plus className="text-blue-400 mr-2 flex-shrink-0" size={20} />
+                        <h3 className="text-blue-400 font-medium text-sm sm:text-base">¿Quieres añadir algo más?</h3>
                       </div>
-                      <span className="text-slate-400 text-sm">
+                      <span className="text-slate-400 text-xs sm:text-sm">
                         {getAllAvailableServices().length} servicios disponibles
                       </span>
                     </div>
@@ -951,26 +952,26 @@ export default function CreatePlanPage() {
                       <div className="space-y-3 mb-4">
                         {getPaginatedAvailableServices().map((service) => (
                           <div key={service.id} className="bg-white/5 border border-white/10 rounded-lg p-3 hover:bg-white/10 transition-colors">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                              <div className="flex items-start flex-1 gap-3">
                                 {service.icon && (
-                                  <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center mr-3">
-                                    <service.icon className="text-slate-800" size={16} />
+                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                                    <service.icon className="text-slate-800" size={14} />
                                   </div>
                                 )}
-                                <div className="flex-1">
-                                  <div className="flex items-center mb-1">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
                                     <h4 className="text-white font-medium text-sm">{service.name}</h4>
                                     {service.tag && (
-                                      <span className="ml-2 px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded-full">
+                                      <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded-full w-fit">
                                         {service.tag}
                                       </span>
                                     )}
                                   </div>
-                                  <p className="text-slate-400 text-xs">{service.description}</p>
+                                  <p className="text-slate-400 text-xs leading-relaxed">{service.description}</p>
                                 </div>
                               </div>
-                              <div className="flex items-center space-x-3 ml-4">
+                              <div className="flex flex-row sm:flex-col items-center justify-between sm:justify-end gap-3 sm:gap-2 sm:ml-4">
                                 <span className="text-white font-semibold text-sm">{service.price}€</span>
                                 <button
                                   onClick={() => toggleService(service.id, service.price)}
@@ -1073,12 +1074,12 @@ export default function CreatePlanPage() {
     >
       {/* Progress Bar */}
       <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50">
-        <div className="container-custom py-6">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-slate-300 font-medium">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2">
+            <span className="text-slate-300 font-medium text-sm sm:text-base">
               Paso {currentStep} de {planSteps.length + 1}
             </span>
-            <span className="text-slate-300 bg-slate-700/50 px-4 py-2 rounded-full text-sm">
+            <span className="text-slate-300 bg-slate-700/50 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm w-fit">
               {Math.round(progress)}% completado
             </span>
           </div>
@@ -1091,34 +1092,34 @@ export default function CreatePlanPage() {
         </div>
       </div>
 
-      <div className="container-custom py-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20">
         <div className="max-w-6xl mx-auto">
           {/* Bundles en el primer paso */}
           {currentStep === 1 && (
-            <div className="mb-16">
-              <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-light mb-6 text-white tracking-tight">Kits Prediseñados</h1>
-                <p className="text-xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed">
+            <div className="mb-8 sm:mb-12 lg:mb-16">
+              <div className="text-center mb-8 sm:mb-12">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 text-white tracking-tight">Kits Prediseñados</h1>
+                <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed px-4">
                   Ahorra tiempo y dinero con nuestros paquetes optimizados
                 </p>
               </div>
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+              <div className="grid gap-4 sm:gap-6 max-w-4xl mx-auto mb-8 sm:mb-12">
                 {bundles.map((bundle) => (
                   <div
                     key={bundle.id}
-                    className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-3xl p-8 border border-blue-400/20 cursor-pointer hover:border-blue-400/40 transition-all group"
+                    className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 border border-blue-400/20 cursor-pointer hover:border-blue-400/40 transition-all group"
                     onClick={() => selectBundle(bundle.id)}
                   >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-medium text-white">{bundle.name}</h3>
-                      <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+                      <h3 className="text-lg sm:text-xl font-medium text-white">{bundle.name}</h3>
+                      <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium w-fit">
                         Ahorra {bundle.savings}€
                       </div>
                     </div>
-                    <p className="text-slate-300 mb-6">{bundle.description}</p>
-                    <div className="flex justify-between items-center">
-                      <div className="text-3xl font-light text-white">{bundle.price.toLocaleString()}€</div>
-                      <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-xl font-medium transition-colors group-hover:scale-105">
+                    <p className="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">{bundle.description}</p>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                      <div className="text-2xl sm:text-3xl font-light text-white">{bundle.price.toLocaleString()}€</div>
+                      <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-xl font-medium transition-colors group-hover:scale-105 text-sm sm:text-base w-fit">
                         Seleccionar Kit
                       </button>
                     </div>
@@ -1127,55 +1128,61 @@ export default function CreatePlanPage() {
               </div>
               <div className="text-center">
                 <div className="inline-flex items-center text-slate-400 text-sm">
-                  <div className="w-12 h-px bg-slate-600 mr-4"></div>
+                  <div className="w-8 sm:w-12 h-px bg-slate-600 mr-2 sm:mr-4"></div>
                   <span>O configura tu proyecto paso a paso</span>
-                  <div className="w-12 h-px bg-slate-600 ml-4"></div>
+                  <div className="w-8 sm:w-12 h-px bg-slate-600 ml-2 sm:ml-4"></div>
                 </div>
               </div>
             </div>
           )}
 
           {/* Step Header */}
-          <div className="mb-16">
-            <div className="w-16 h-16 bg-slate-100 rounded-2xl mx-auto mb-8 flex items-center justify-center text-slate-800 text-2xl font-light shadow-xl">
+          <div className="mb-8 sm:mb-12 lg:mb-16">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-100 rounded-2xl mx-auto mb-4 sm:mb-6 lg:mb-8 flex items-center justify-center text-slate-800 text-lg sm:text-2xl font-light shadow-xl">
               {currentStep}
             </div>
             
             {/* Título con botones de navegación */}
-            <div className="flex items-center justify-between mb-6">
-              <button
-                onClick={prevStep}
-                disabled={currentStep === 1}
-                className="flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ArrowLeft className="mr-2" size={16} />
-                Anterior
-              </button>
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={prevStep}
+                  disabled={currentStep === 1}
+                  className="flex items-center px-3 sm:px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                >
+                  <ArrowLeft className="mr-1 sm:mr-2" size={16} />
+                  <span className="hidden sm:inline">Anterior</span>
+                  <span className="sm:hidden">Ant</span>
+                </button>
+                
+                <button
+                  onClick={nextStep}
+                  disabled={currentStep === 1 && !(selectedServices["basic"] > 0 || selectedServices["mobile-app"] > 0)}
+                  className="flex items-center px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                >
+                  <span className="hidden sm:inline">{currentStep === planSteps.length ? "Ver Resumen" : "Siguiente"}</span>
+                  <span className="sm:hidden">{currentStep === planSteps.length ? "Resumen" : "Sig"}</span>
+                  <ArrowRight className="ml-1 sm:ml-2" size={16} />
+                </button>
+              </div>
               
-              <h1 className="text-4xl md:text-5xl font-light text-white tracking-tight text-center flex-1 mx-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight text-center">
                 {currentStepData.title}
               </h1>
-              
-              <button
-                onClick={nextStep}
-                disabled={currentStep === 1 && !(selectedServices["basic"] > 0 || selectedServices["mobile-app"] > 0)}
-                className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {currentStep === planSteps.length ? "Ver Resumen" : "Siguiente"}
-                <ArrowRight className="ml-2" size={16} />
-              </button>
             </div>
             
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed text-center mb-8">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed text-center mb-6 sm:mb-8 px-4">
               {currentStepData.subtitle}
             </p>
-            
-
           </div>
 
           {/* Services Grid */}
           <div
-            className={`grid ${currentStep === 1 ? "md:grid-cols-2 max-w-4xl mx-auto" : "md:grid-cols-2 lg:grid-cols-3"} gap-8 mb-16`}
+            className={`grid gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16 ${
+              currentStep === 1 
+                ? "grid-cols-1 max-w-4xl mx-auto" 
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            }`}
           >
             {currentStepData.services
               .filter(service => !service.included) // Filtrar servicios incluidos
@@ -1193,13 +1200,13 @@ export default function CreatePlanPage() {
                   onClick={() => toggleService(service.id, service.price)}
                 >
                   <div
-                    className={`bg-white/5 backdrop-blur-sm rounded-3xl p-6 border transition-all duration-300 hover:bg-white/10 h-full flex flex-col ${
+                    className={`bg-white/5 backdrop-blur-sm rounded-3xl p-4 sm:p-6 border transition-all duration-300 hover:bg-white/10 h-full flex flex-col relative ${
                       isSelected ? "border-blue-400/50 bg-blue-500/10" : "border-white/10 hover:border-white/20"
                     }`}
                   >
                     {/* Badge popular */}
                     {service.popular && (
-                      <div className="absolute -top-3 -right-3 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                      <div className="absolute -top-2 -right-2 bg-blue-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium shadow-lg">
                         Popular
                       </div>
                     )}
@@ -1209,15 +1216,15 @@ export default function CreatePlanPage() {
                       <div className="flex items-center flex-1">
                         {IconComponent && (
                           <div
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center mr-4 shadow-lg ${
+                            className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg flex-shrink-0 ${
                               isSelected ? "bg-blue-500" : "bg-slate-100"
                             }`}
                           >
-                            <IconComponent className={isSelected ? "text-white" : "text-slate-800"} size={20} />
+                            <IconComponent className={isSelected ? "text-white" : "text-slate-800"} size={18} />
                           </div>
                         )}
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-white mb-1 leading-tight">{service.name}</h3>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-base sm:text-lg font-semibold text-white mb-1 leading-tight">{service.name}</h3>
                           {service.tag && (
                             <span className="inline-block text-xs text-blue-300 bg-blue-500/20 px-2 py-1 rounded-full font-medium">
                               {service.tag}
@@ -1227,34 +1234,34 @@ export default function CreatePlanPage() {
                       </div>
 
                       {/* Checkbox de selección */}
-                      <div className="ml-4 flex-shrink-0">
+                      <div className="ml-2 sm:ml-4 flex-shrink-0">
                         {isSelected ? (
-                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                            <Check className="text-white" size={16} />
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                            <Check className="text-white" size={14} />
                           </div>
                         ) : (
-                          <div className="w-8 h-8 border-2 border-slate-600 rounded-full hover:border-slate-500 transition-colors"></div>
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-slate-600 rounded-full hover:border-slate-500 transition-colors"></div>
                         )}
                       </div>
                     </div>
 
                     {/* Descripción */}
-                    <div className="flex-1 mb-6">
-                      <p className="text-slate-400 text-sm leading-relaxed overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{service.description}</p>
+                    <div className="flex-1 mb-4 sm:mb-6">
+                      <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{service.description}</p>
                     </div>
 
                     {/* Footer con precio y controles */}
-                    <div className="flex justify-between items-center pt-4 border-t border-white/5">
-                      <div className="text-2xl font-bold text-white">{service.price.toLocaleString()}€</div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-4 border-t border-white/5 gap-3 sm:gap-0">
+                      <div className="text-xl sm:text-2xl font-bold text-white">{service.price.toLocaleString()}€</div>
 
                       {isSelected && service.allowQuantity && (
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center justify-center sm:justify-end space-x-2">
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
                               updateServiceQuantity(service.id, service.price, -1)
                             }}
-                            className="w-7 h-7 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
                           >
                             <Minus size={12} className="text-white" />
                           </button>
@@ -1264,7 +1271,7 @@ export default function CreatePlanPage() {
                               e.stopPropagation()
                               updateServiceQuantity(service.id, service.price, 1)
                             }}
-                            className="w-7 h-7 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center transition-colors"
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center transition-colors"
                           >
                             <Plus size={12} className="text-white" />
                           </button>
@@ -1279,13 +1286,13 @@ export default function CreatePlanPage() {
 
           {/* Información de inclusiones en el primer paso */}
           {currentStep === 1 && (
-            <div className="mt-8 max-w-2xl mx-auto mb-12">
-              <div className="bg-green-500/10 border border-green-400/20 rounded-2xl p-6">
+            <div className="mt-6 sm:mt-8 max-w-2xl mx-auto mb-8 sm:mb-12">
+              <div className="bg-green-500/10 border border-green-400/20 rounded-2xl p-4 sm:p-6">
                 <div className="flex items-center justify-center mb-3">
-                  <Check className="text-green-400 mr-2" size={20} />
-                  <span className="text-green-400 font-medium">¿Sabías que todos los proyectos incluyen?</span>
+                  <Check className="text-green-400 mr-2 flex-shrink-0" size={20} />
+                  <span className="text-green-400 font-medium text-sm sm:text-base">¿Sabías que todos los proyectos incluyen?</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm text-slate-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm text-slate-300">
                   <div>• Dominio 1º año</div>
                   <div>• SSL gratuito</div>
                   <div>• Hosting 1º año</div>
@@ -1293,7 +1300,7 @@ export default function CreatePlanPage() {
                   <div>• Botón WhatsApp</div>
                   <div>• Mapa Google</div>
                 </div>
-                <p className="text-green-400 text-sm mt-3 font-medium">
+                <p className="text-green-400 text-xs sm:text-sm mt-3 font-medium">
                   Valor total de inclusiones: 150€
                 </p>
               </div>
@@ -1301,18 +1308,17 @@ export default function CreatePlanPage() {
           )}
 
           {/* Price Summary */}
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-8 mb-12 border border-slate-700/50">
-            <div className="flex justify-between items-center">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-3xl p-4 sm:p-6 lg:p-8 mb-8 sm:mb-12 border border-slate-700/50">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
               <div>
-                <h3 className="text-xl font-medium mb-2 text-white">Precio Actual</h3>
-                <p className="text-slate-400">{Object.keys(selectedServices).length} servicios seleccionados</p>
+                <h3 className="text-lg sm:text-xl font-medium mb-2 text-white">Precio Actual</h3>
+                <p className="text-slate-400 text-sm sm:text-base">{Object.keys(selectedServices).length} servicios seleccionados</p>
               </div>
-              <div className="text-right">
-                <div className="text-4xl font-light text-white">{calculateTotal().toLocaleString()}€</div>
+              <div className="text-center sm:text-right">
+                <div className="text-3xl sm:text-4xl font-light text-white">{calculateTotal().toLocaleString()}€</div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </motion.div>
