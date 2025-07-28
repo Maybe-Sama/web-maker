@@ -21,11 +21,19 @@ const projects = [
   },
   {
     id: 3,
-    title: "Learning Eureka",
+    title: "Learning Time",
     description: "Sitio de recursos educativos con una amplia gama de materiales para el aprendizaje autodidacta.",
     category: "Recursos Educativos",
     image: "/webs_previews/learning.png",
     url: "https://learningeureka.pythonanywhere.com",
+  },
+  {
+    id: 4,
+    title: "Easiful",
+    description: "Web de presencia digital para una aplicación de gestión del hogar, facilitando la organización doméstica.",
+    category: "Gestión Doméstica",
+    image: "/webs_previews/easiful.png",
+    url: "https://www.easiful.es",
   },
 ]
 
