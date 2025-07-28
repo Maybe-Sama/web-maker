@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, AlertCircle, Shield, Mail, Users, FileText } from "lucide-react"
+import { Check, AlertCircle, Shield, Mail, Users, FileText, CheckSquare, Square } from "lucide-react"
 
 interface ConsentCheckboxesProps {
   onConsentChange: (consents: ConsentData) => void
@@ -46,6 +46,35 @@ export default function ConsentCheckboxes({
     setErrors(newErrors)
     
     onConsentChange(newConsents)
+  }
+
+  const acceptAllConsents = () => {
+    const allAccepted = {
+      marketing: true,
+      communications: true,
+      dataProcessing: true,
+      thirdParties: true,
+      dataRetention: true
+    }
+    setConsents(allAccepted)
+    setErrors([])
+    onConsentChange(allAccepted)
+  }
+
+  const acceptRequiredOnly = () => {
+    const requiredAccepted = {
+      marketing: false,
+      communications: false,
+      dataProcessing: true,
+      thirdParties: false,
+      dataRetention: false,
+      ...Object.fromEntries(
+        requiredConsents.map(consent => [consent, true])
+      )
+    } as ConsentData
+    setConsents(requiredAccepted)
+    setErrors([])
+    onConsentChange(requiredAccepted)
   }
 
   const getConsentLabel = (consentKey: string): string => {
@@ -102,6 +131,9 @@ export default function ConsentCheckboxes({
     }
   ]
 
+  const allAccepted = Object.values(consents).every(Boolean)
+  const requiredAccepted = requiredConsents.every(consent => consents[consent as keyof ConsentData])
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="bg-blue-500/10 border border-blue-400/20 rounded-2xl p-4 mb-6">
@@ -118,8 +150,41 @@ export default function ConsentCheckboxes({
         </div>
       </div>
 
+      {/* Botones de acción rápida */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <button
+          onClick={acceptAllConsents}
+          className={`flex items-center justify-center px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+            allAccepted
+              ? 'bg-green-600 text-white cursor-default'
+              : 'bg-blue-600 hover:bg-blue-500 text-white'
+          }`}
+          disabled={allAccepted}
+        >
+          <CheckSquare className="w-4 h-4 mr-2" />
+          {allAccepted ? 'Todos aceptados' : 'Aceptar todos'}
+        </button>
+        
+        <button
+          onClick={acceptRequiredOnly}
+          className={`flex items-center justify-center px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+            requiredAccepted && !allAccepted
+              ? 'bg-orange-600 text-white cursor-default'
+              : 'bg-slate-600 hover:bg-slate-500 text-white'
+          }`}
+          disabled={requiredAccepted && !allAccepted}
+        >
+          <Shield className="w-4 h-4 mr-2" />
+          {requiredAccepted && !allAccepted ? 'Solo obligatorios' : 'Solo obligatorios'}
+        </button>
+      </div>
+
       {consentItems.map((item) => (
-        <div key={item.key} className="bg-white/5 rounded-2xl p-4 border border-white/10">
+        <div key={item.key} className={`bg-white/5 rounded-2xl p-4 border transition-all duration-200 ${
+          consents[item.key] 
+            ? 'border-blue-400/30 bg-blue-500/5' 
+            : 'border-white/10'
+        }`}>
           <div className="flex items-start space-x-3">
             <button
               onClick={() => handleConsentChange(item.key, !consents[item.key])}
@@ -136,14 +201,20 @@ export default function ConsentCheckboxes({
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center mb-2">
-                <item.icon className="w-4 h-4 mr-2 text-blue-400" />
-                <h4 className="text-white font-medium text-sm">
+                <item.icon className={`w-4 h-4 mr-2 ${
+                  consents[item.key] ? 'text-blue-400' : 'text-slate-400'
+                }`} />
+                <h4 className={`font-medium text-sm ${
+                  consents[item.key] ? 'text-white' : 'text-slate-300'
+                }`}>
                   {item.title}
                   {item.required && <span className="text-red-400 ml-1">*</span>}
                 </h4>
               </div>
               
-              <p className="text-slate-300 text-sm mb-2 leading-relaxed">
+              <p className={`text-sm mb-2 leading-relaxed ${
+                consents[item.key] ? 'text-slate-200' : 'text-slate-300'
+              }`}>
                 {item.description}
               </p>
               

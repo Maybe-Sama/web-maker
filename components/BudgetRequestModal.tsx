@@ -62,6 +62,19 @@ export default function BudgetRequestModal({
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [isSubmitted, setIsSubmitted] = useState(false)
 
+  // Verificar si el formulario está listo para enviar
+  const isFormReady = () => {
+    const hasRequiredFields = formData.name.trim() && 
+                             formData.email.trim() && 
+                             validators.email(formData.email) &&
+                             formData.phone.trim() && 
+                             validators.phone(formData.phone)
+    
+    const hasRequiredConsents = formData.consents.dataProcessing
+    
+    return hasRequiredFields && hasRequiredConsents
+  }
+
   const validators = {
     email: (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
     phone: (phone: string) => /^[+]?[\d\s\-()]{9,}$/.test(phone.trim())
@@ -101,8 +114,11 @@ export default function BudgetRequestModal({
     }
 
     // Validar consentimientos requeridos
-    if (!formData.consents.dataProcessing) {
-      newErrors.consents = "Debes aceptar el procesamiento de datos personales"
+    const requiredConsents = ['dataProcessing']
+    const missingConsents = requiredConsents.filter(consent => !formData.consents[consent as keyof ConsentData])
+    
+    if (missingConsents.length > 0) {
+      newErrors.consents = `Debes aceptar todos los consentimientos obligatorios`
     }
 
     setErrors(newErrors)
@@ -395,7 +411,7 @@ export default function BudgetRequestModal({
               {/* Resumen del presupuesto */}
               <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10">
                 <h4 className="font-semibold text-white mb-4">Resumen de tu configuración</h4>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-4">
                   <div>
                     <p className="text-slate-300">
                       {selectedBundle ? 'Kit seleccionado' : `${Object.keys(selectedServices).length} servicios`}
@@ -406,6 +422,29 @@ export default function BudgetRequestModal({
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold text-blue-400">{totalPrice.toLocaleString()}€</p>
+                  </div>
+                </div>
+                
+                {/* Indicador de estado del formulario */}
+                <div className={`p-3 rounded-xl border ${
+                  isFormReady() 
+                    ? 'bg-green-500/10 border-green-400/20' 
+                    : 'bg-orange-500/10 border-orange-400/20'
+                }`}>
+                  <div className="flex items-center">
+                    {isFormReady() ? (
+                      <CheckCircle className="w-5 h-5 text-green-400 mr-2" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-orange-400 mr-2" />
+                    )}
+                    <span className={`text-sm font-medium ${
+                      isFormReady() ? 'text-green-300' : 'text-orange-300'
+                    }`}>
+                      {isFormReady() 
+                        ? 'Formulario completo - Listo para enviar' 
+                        : 'Completa todos los campos obligatorios para continuar'
+                      }
+                    </span>
                   </div>
                 </div>
               </div>
@@ -422,8 +461,12 @@ export default function BudgetRequestModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !isFormReady()}
+                  className={`flex-1 px-6 py-3 rounded-2xl font-medium transition-colors ${
+                    isFormReady() && !isSubmitting
+                      ? 'bg-blue-600 hover:bg-blue-500 text-white'
+                      : 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                  }`}
                 >
                   {isSubmitting ? 'Enviando...' : 'Solicitar Presupuesto'}
                 </button>

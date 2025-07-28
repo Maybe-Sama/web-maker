@@ -35,7 +35,7 @@ export default function Header() {
               </Link>
             ))}
             <Link href="/create-plan" className="btn-primary">
-              Crea tu Plan
+              Diseña tu web
             </Link>
           </div>
 
