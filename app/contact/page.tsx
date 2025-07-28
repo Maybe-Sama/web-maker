@@ -5,6 +5,7 @@ import { CheckCircle, Briefcase, DollarSign, User, MessageSquare, Phone, Mail, B
 import { motion, AnimatePresence } from "framer-motion"
 import TiltedCard from "@/components/ui/TiltedCard"
 import BlurText from "@/components/ui/BlurText"
+import ConsentCheckboxes, { ConsentData } from "@/components/ConsentCheckboxes"
 import "@/components/ui/Stepper.css"
 
 // Configuración y constantes
@@ -288,6 +289,14 @@ export default function ContactPage() {
   const [phoneError, setPhoneError] = useState<string | null>(null)
   const [showValidationError, setShowValidationError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [consents, setConsents] = useState<ConsentData>({
+    marketing: false,
+    communications: false,
+    dataProcessing: false,
+    thirdParties: false,
+    dataRetention: false
+  })
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -339,7 +348,11 @@ export default function ContactPage() {
     }
   };
 
-  const handleNext = () => {
+  const handleConsentChange = (newConsents: ConsentData) => {
+    setConsents(newConsents)
+  }
+
+  const handleNext = async () => {
     setShowValidationError(false)
     setValidationErrorMessage("")
     
@@ -390,20 +403,43 @@ export default function ContactPage() {
       }
     }
     if (activeStep === 7) {
-      // Enviar formulario
-      fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-        .then(res => {
-          if (!res.ok) throw new Error("Error enviando el formulario");
-          setIsSubmitted(true);
-        })
-        .catch(() => {
-          setValidationErrorMessage("Hubo un error enviando el formulario. Intenta de nuevo.");
-          setShowValidationError(true);
+      // Validar consentimientos requeridos
+      if (!consents.dataProcessing) {
+        setValidationErrorMessage("Debes aceptar el procesamiento de datos personales para continuar.");
+        setShowValidationError(true);
+        return;
+      }
+      
+      // Enviar formulario con mejor manejo de errores
+      setIsSubmitting(true);
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...formData,
+            consents
+          }),
         });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          setIsSubmitted(true);
+        } else {
+          // Error específico del servidor
+          const errorMessage = result.error || "Error desconocido del servidor";
+          setValidationErrorMessage(`Error: ${errorMessage}`);
+          setShowValidationError(true);
+        }
+      } catch (error) {
+        // Error de red o conexión
+        console.error("Error enviando formulario:", error);
+        setValidationErrorMessage("Error de conexión. Verifica tu internet e intenta de nuevo.");
+        setShowValidationError(true);
+      } finally {
+        setIsSubmitting(false);
+      }
       return
     }
     
@@ -626,13 +662,23 @@ export default function ContactPage() {
                   )}
 
                   {activeStep === 7 && (
-                    <div className="text-center">
-                      <BlurText text="¡Perfecto! Revisa tu información" delay={100} animateBy="words" direction="top" className="text-2xl font-bold mb-4 text-[var(--text-headers)]" />
-                      <p className="mb-6">Tu resumen completo está arriba. Si todo está correcto, envía tu solicitud.</p>
-                      <div className="p-6 bg-green-50 rounded-lg border border-green-200">
-                        <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
-                        <h4 className="font-semibold text-green-800 mb-2">¡Formulario completo!</h4>
-                        <p className="text-sm text-green-700">Puedes usar los botones de edición arriba para modificar cualquier dato.</p>
+                    <div>
+                      <div className="mb-6 flex flex-col items-center">
+                        <BlurText text="Consentimientos de Protección de Datos" delay={100} animateBy="words" direction="top" className="text-2xl font-bold mb-4 text-[var(--text-headers)]" />
+                        <p className="text-center mb-6">Para cumplir con la legislación española, necesitamos tu consentimiento explícito.</p>
+                      </div>
+                      
+                      <ConsentCheckboxes
+                        onConsentChange={handleConsentChange}
+                        requiredConsents={['dataProcessing']}
+                        className="max-w-2xl mx-auto"
+                      />
+                      
+                      <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                        <CheckCircle className="w-6 h-6 text-green-600 inline mr-2" />
+                        <span className="text-sm text-green-700">
+                          Tu información está completa. Revisa los consentimientos y envía tu solicitud.
+                        </span>
                       </div>
                     </div>
                   )}
@@ -648,8 +694,12 @@ export default function ContactPage() {
                         Siguiente
                       </button>
                     ) : (
-                      <button onClick={handleNext} className="next-button bg-green-600 hover:bg-green-700">
-                        Enviar Solicitud
+                      <button 
+                        onClick={handleNext} 
+                        disabled={isSubmitting}
+                        className={`next-button bg-green-600 hover:bg-green-700 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        {isSubmitting ? 'Enviando...' : 'Enviar Solicitud'}
                       </button>
                     )}
                   </div>
